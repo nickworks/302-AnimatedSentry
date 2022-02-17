@@ -4,21 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum Axis {
-    Forward,
-    Backward,
-    Right,
-    Left,
-    Up,
-    Down
-}
-
 public class PointAt : MonoBehaviour
 {
 
-    public Axis aimOrientation;
+    public bool lockAxisX = false;
+    public bool lockAxisY = false;
+    public bool lockAxisZ = false;
 
     private Quaternion startRotation;
+    private Quaternion goalRotation;
 
     private PlayerTargeting playerTargeting;
     
@@ -39,22 +33,26 @@ public class PointAt : MonoBehaviour
 
 
             Vector3 vToTarget = playerTargeting.target.transform.position - transform.position;
+            vToTarget.Normalize();
 
-            Vector3 fromVector = Vector3.forward;
+            Quaternion worldRot = Quaternion.LookRotation(vToTarget, Vector3.up);
+            Quaternion prevRot = transform.rotation;
+            Vector3 eulerBefore = transform.localEulerAngles;
+            transform.rotation = worldRot;
+            Vector3 eulerAfter = transform.localEulerAngles;
+            transform.rotation = prevRot;
+            
+            if (lockAxisX) eulerAfter.x = eulerBefore.x;
+            if (lockAxisY) eulerAfter.y = eulerBefore.y;
+            if (lockAxisZ) eulerAfter.z = eulerBefore.z;
 
-            switch (aimOrientation) {
-                case Axis.Forward: fromVector = Vector3.forward; break;
-                case Axis.Backward: fromVector = Vector3.back; break;
-                case Axis.Right: fromVector = Vector3.right; break;
-                case Axis.Left: fromVector = Vector3.left; break;
-                case Axis.Up: fromVector = Vector3.up; break;
-                case Axis.Down: fromVector = Vector3.down;  break;
-            }
-
-            transform.rotation = Quaternion.FromToRotation(fromVector, vToTarget);
+            goalRotation = Quaternion.Euler(eulerAfter);
 
         } else {
-            transform.localRotation = startRotation;
+            goalRotation = startRotation;
         }
+
+        transform.localRotation = AnimMath.Ease(transform.localRotation, goalRotation, .001f);
+
     }
 }

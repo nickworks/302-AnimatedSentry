@@ -58,4 +58,19 @@ public static class AnimMath
         float p = 1 - Mathf.Pow(percentLeftAfter1Second, dt);
         return Lerp(current, target, p);
     }
+
+    /// <summary>
+    /// Trying to ease between angles > 180 degrees? You need to wrap your angles!
+    /// </summary>
+    /// <param name="baseAngle">This angle won't change.</param>
+    /// <param name="angleToBeWrapped">This angle will change so that it is relative to baseAngle.</param>
+    /// <returns>The wrapped angle.</returns>
+    public static float AngleWrapDegrees(float baseAngle, float angleToBeWrapped) {
+
+        while (baseAngle > angleToBeWrapped + 180) angleToBeWrapped += 360;
+        while (baseAngle < angleToBeWrapped - 180) angleToBeWrapped -= 360;
+
+        return angleToBeWrapped;
+    }
+
 }
