@@ -49,9 +49,7 @@ public class CameraController : MonoBehaviour
 
         if (isAiming) {
 
-
             Quaternion tempTarget = Quaternion.Euler(0, playerYaw, 0);
-
             transform.rotation = AnimMath.Ease(transform.rotation, tempTarget, .001f);
 
         } else {
@@ -61,14 +59,9 @@ public class CameraController : MonoBehaviour
             yaw += mx * mouseSensitivityX;
             pitch += my * mouseSensitivityY;
 
-            //if (yaw > 360) yaw -= 360;
-            //if (yaw < 0) yaw += 360;
-
             pitch = Mathf.Clamp(pitch, -10, 89);
             transform.rotation = AnimMath.Ease(transform.rotation, Quaternion.Euler(pitch, yaw, 0), .001f);
         }
-
-
 
         // 3. dolly camera in/out:
         

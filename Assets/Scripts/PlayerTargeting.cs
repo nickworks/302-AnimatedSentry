@@ -103,6 +103,9 @@ public class PlayerTargeting : MonoBehaviour
     }
 
     private bool CanSeeThing(TargetableObject thing) {
+
+        if (thing == null) return false;
+
         Vector3 vToThing = thing.transform.position - transform.position;
 
         // is too far to see?
